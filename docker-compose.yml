@@ -5,7 +5,7 @@ services:
     container_name: elastic01
     environment:
       - node.name=elastic01
-      - discovery.seed_hosts=elastic01,elastic02,elastic03
+      - discovery.seed_hosts=elastic02,elastic03
       - cluster.initial_master_nodes=elastic01,elastic02,elastic03
       - cluster.name=cluster
       - bootstrap.memory_lock=true
@@ -25,7 +25,7 @@ services:
     container_name: elastic02
     environment:
       - node.name=elastic02
-      - discovery.seed_hosts=elastic01,elastic02,elastic03
+      - discovery.seed_hosts=elastic01,elastic03
       - cluster.initial_master_nodes=elastic01,elastic02,elastic03
       - cluster.name=cluster
       - bootstrap.memory_lock=true
@@ -43,7 +43,7 @@ services:
     container_name: elastic03
     environment:
       - node.name=elastic03
-      - discovery.seed_hosts=elastic01,elastic02,elastic03
+      - discovery.seed_hosts=elastic01,elastic02
       - cluster.initial_master_nodes=elastic01,elastic02,elastic03
       - cluster.name=cluster
       - bootstrap.memory_lock=true
@@ -61,7 +61,7 @@ services:
     container_name: kibana01
     environment:
       SERVER_NAME: kibana01.local
-      ELASTICSEARCH_URL: http://elastic01:9200,http://elastic02:9200,http://elastic03:9200
+      ELASTICSEARCH_URL: "http://elastic01:9200,http://elastic02:9200,http://elastic03:9200"
     ports:
       - '5601:5601'
     networks:
