@@ -1,0 +1,79 @@
+version: '2.2'
+services:
+  elastic01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: elastic01
+    environment:
+      - node.name=elastic01
+      - discovery.seed_hosts=elastic01,elastic02,elastic03
+      - cluster.initial_master_nodes=elastic01,elastic02,elastic03
+      - cluster.name=cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic01-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elasticnet
+  elastic02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: elastic02
+    environment:
+      - node.name=elastic02
+      - discovery.seed_hosts=elastic01,elastic02,elastic03
+      - cluster.initial_master_nodes=elastic01,elastic02,elastic03
+      - cluster.name=cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic02-data:/usr/share/elasticsearch/data
+    networks:
+      - elasticnet
+  elastic03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: elastic03
+    environment:
+      - node.name=elastic03
+      - discovery.seed_hosts=elastic01,elastic02,elastic03
+      - cluster.initial_master_nodes=elastic01,elastic02,elastic03
+      - cluster.name=cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic03-data:/usr/share/elasticsearch/data
+    networks:
+      - elasticnet
+  kibana01:
+    image: docker.elastic.co/kibana/kibana:7.3.0
+    container_name: kibana01
+    environment:
+      SERVER_NAME: kibana01.local
+      ELASTICSEARCH_URL: http://elastic01:9200,http://elastic02:9200,http://elastic03:9200
+    ports:
+      - '5601:5601'
+    networks:
+      - elasticnet
+
+volumes:
+  elastic01-data:
+    driver: local
+  elastic02-data:
+    driver: local
+  elastic03-data:
+    driver: local
+
+networks:
+  elasticnet:
